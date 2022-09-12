@@ -1,3 +1,6 @@
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -9,7 +12,7 @@ public class NamesList {
         names = new ArrayList<>();
     }
 
-    public void startUserInterface() {
+    public void startUserInterface() throws FileNotFoundException {
         System.out.println("""
                 Welcome to the NamesList - enterprise edition.
                 ----------------------------------------------
@@ -60,14 +63,28 @@ public class NamesList {
         System.out.println("Done");
     }
 
-    private void saveListOfNames() {
-        // TODO: Implement save of the names list to a file
-        System.out.println("NOT IMPLEMENTED");
+    private void saveListOfNames() throws FileNotFoundException {
+        PrintStream out = new PrintStream("names.txt"); //ikke new File()
+
+        for(String name : names) {
+            out.println(name);
+        }
+
     }
 
-    private void loadListOfNames() {
-        // TODO: Implement load of the names list from a file
-        System.out.println("NOT IMPLEMENTED");
+    private void loadListOfNames() throws FileNotFoundException {
+        names.clear(); //sletter først alle navne på listen
+
+        Scanner sc = new Scanner(new File("names.txt"));
+        String name = "-nothing yet-";
+        while(sc.hasNextLine()) { // while skal åbenbart med fordi den indlæser filen linje for linje så der skal loopes
+            name = sc.nextLine(); //med sc.hasNextLine går videre hvis en linje er tom. Check altid om den læser
+            if(!name.isBlank()) { //det sidste navn for ofte læser den den ikke. Ligesom med arrays, der er altid
+                names.add(name); //en plads for lidt eller for meget. Add evt en tom linje til sidst så den
+                System.out.println(name); //læser sidste navn. Det her virker, den tager sidste navn, men
+            } //det er ellers en typisk fejl man skal tage hensyn til.
+        }
+        System.out.println("Done");
     }
 
     private void displayListOfNames() {
@@ -92,7 +109,7 @@ public class NamesList {
     }
 
 
-    public static void main(String[] args) {
+    public static void main(String[] args) throws FileNotFoundException {
         NamesList app = new NamesList();
         app.startUserInterface();
     }
